@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MyCalendar</string>
+    <string name="Sunday_string_name">Sun</string>
+    <string name="Monday_string_name">Mon</string>
+    <string name="Tuesday_string_name">Tue</string>
+    <string name="Wednesday_string_name">Wed</string>
+    <string name="Thursday_string_name">Thu</string>
+    <string name="Friday_string_name">Fri</string>
+    <string name="Saturday_string_name">Sat</string>
+</resources>
