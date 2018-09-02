@@ -108,7 +108,7 @@
 
     </LinearLayout>
 
-    <priv.yh.mycalendar.MyGridView
+    <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/calendar_grid"

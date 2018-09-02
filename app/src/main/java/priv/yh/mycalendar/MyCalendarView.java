@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ public class MyCalendarView extends LinearLayout {
     private ImageView nextMonthBtn;
     private TextView dateText;
 
-    private MyGridView gridView;
+    private GridView gridView;
 
     private Calendar mCalendar = Calendar.getInstance();
 
@@ -91,7 +92,7 @@ public class MyCalendarView extends LinearLayout {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
         dateText.setText(sdf.format(mCalendar.getTime()));
 
-        //set current month details
+        //set every day of current month
         ArrayList<Date> dates = new ArrayList<>();
 
         Calendar curDate = (Calendar) mCalendar.clone();
