@@ -4,5 +4,6 @@
     android:layout_height="match_parent"
     android:id="@+id/dayTextView"
     android:textSize="@dimen/text_size"
+    android:typeface="monospace"
     android:padding="5dp"
     android:gravity="center"/>
