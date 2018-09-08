@@ -62,10 +62,10 @@ public class MyCalendarView extends LinearLayout {
 
         gridView = findViewById(R.id.calendar_grid);
 
-        initEvent();
+        bindEvent();
     }
 
-    private void initEvent() {
+    private void bindEvent() {
         if(preMonthBtn != null) {
             preMonthBtn.setOnClickListener(new OnClickListener() {
                 @Override
