@@ -9,4 +9,5 @@
     <color name="color_cur_day_circle">#ff0000</color>
     <color name="color_week_name">#000000</color>
     <color name="color_month_name">#000000</color>
+    <color name="color_cur_day_text">#ffffff</color>
 </resources>

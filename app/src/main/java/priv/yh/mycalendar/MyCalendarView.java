@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -128,13 +130,14 @@ public class MyCalendarView extends LinearLayout {
             if(convertView == null) {
                 convertView = inflater.inflate(mResourceId,null);
                 holder = new ViewHolder();
-                holder.dayView = convertView.findViewById(R.id.dayTextView);
+                holder.backgroundImageView = convertView.findViewById(R.id.day_bg_imageview);
+                holder.dayTextView = convertView.findViewById(R.id.day_cur_textview);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.dayView.setText(String.valueOf(curDayCell.getDate()));
-            holder.dayView.setTextColor(isCurMonth?
+            holder.dayTextView.setText(String.valueOf(curDayCell.getDate()));
+            holder.dayTextView.setTextColor(isCurMonth?
                     getResources().getColor(R.color.color_cur_month_day):
                     getResources().getColor(R.color.color_not_cur_month_day));
             if(today.getDate() == curDayCell.getDate()
@@ -142,15 +145,16 @@ public class MyCalendarView extends LinearLayout {
                && today.getYear() == curDayCell.getYear()
                /*for other month not set today-flag*/
                && mCalendar.get(Calendar.MONTH) == today.getMonth()) {
-                holder.dayView.setToday(true);
-                holder.dayView.setTextColor(getResources().getColor(R.color.color_cur_day_circle));
+                holder.backgroundImageView.setVisibility(VISIBLE);
+                holder.dayTextView.setTextColor(getResources().getColor(R.color.color_cur_day_text));
             }
 
             return convertView;
         }
 
         class ViewHolder {
-            MyDayView dayView;
+            ImageView backgroundImageView;
+            TextView dayTextView;
         }
     }
 
