@@ -2,4 +2,9 @@
 <resources>
     <dimen name="title_text_size">14sp</dimen>
     <dimen name="text_size">18sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="time_picker_button_dimen">80dp</dimen>
+    <dimen name="time_picker_textview_width">90dp</dimen>
+    <dimen name="time_picker_view_start_margin">20dp</dimen>
 </resources>

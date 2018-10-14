@@ -1,17 +1,22 @@
 package priv.yh.mycalendar;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,6 +111,20 @@ public class MyCalendarView extends LinearLayout {
         }
 
         gridView.setAdapter(new MyCalendarAdapter(getContext(), R.layout.day_view, dates));
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final boolean is24HourFormat = DateFormat.is24HourFormat(getContext());
+                new MyTimePickerDialog(getContext(), new MyTimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker tp1, int hourOfDay1, int minute1,
+                                          TimePicker tp2, int hourOfDay2, int minute2) {
+                        Log.e("yanhan", "hourOfDay1="+hourOfDay1+", hourOfDay2="+hourOfDay2
+                        +", minute1="+minute1+", minute2="+minute2);
+                    }
+                }, 0, 0, 0, 0, is24HourFormat).show();
+            }
+        });
     }
 
     private class MyCalendarAdapter extends ArrayAdapter<Date> {

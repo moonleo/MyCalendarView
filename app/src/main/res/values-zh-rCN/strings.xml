@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">我的日历</string>
+    <string name="Sunday_string_name">周日</string>
+    <string name="Monday_string_name">周一</string>
+    <string name="Tuesday_string_name">周二</string>
+    <string name="Wednesday_string_name">周三</string>
+    <string name="Thursday_string_name">周四</string>
+    <string name="Friday_string_name">周五</string>
+    <string name="Saturday_string_name">周六</string>
+    <string name="on_duty_string">上班时间</string>
+    <string name="off_duty_string">下班时间</string>
+    <string name="btn_ok_string">确定</string>
+    <string name="btn_cancel_string">取消</string>
+</resources>

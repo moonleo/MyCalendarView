@@ -7,4 +7,8 @@
     <string name="Thursday_string_name">Thu</string>
     <string name="Friday_string_name">Fri</string>
     <string name="Saturday_string_name">Sat</string>
+    <string name="on_duty_string">On Duty Time</string>
+    <string name="off_duty_string">Off Duty Time</string>
+    <string name="btn_ok_string">OK</string>
+    <string name="btn_cancel_string">CANCEL</string>
 </resources>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/on_duty_time_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <TextView
+            android:layout_width="@dimen/time_picker_textview_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/on_duty_string"/>
+        <TimePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/time_picker_view_start_margin"
+            android:timePickerMode="spinner"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/off_duty_time_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_below="@id/on_duty_time_container">
+        <TextView
+            android:layout_width="@dimen/time_picker_textview_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/off_duty_string"/>
+        <TimePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/time_picker_view_start_margin"
+            android:timePickerMode="spinner"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_below="@id/off_duty_time_container">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_cancel_string"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/time_picker_button_dimen"
+            android:text="@string/btn_ok_string"/>
+    </LinearLayout>
+
+</RelativeLayout>

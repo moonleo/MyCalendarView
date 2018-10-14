@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 
 public class MyDayView extends FrameLayout {
 
-
     public MyDayView(Context context) {
         super(context);
     }
