@@ -6,17 +6,18 @@
         android:id="@+id/on_duty_time_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center">
         <TextView
             android:layout_width="@dimen/time_picker_textview_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:text="@string/on_duty_string"/>
         <TimePicker
-            android:layout_width="wrap_content"
+            android:id="@+id/timepicker_on_duty"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/time_picker_view_start_margin"
             android:timePickerMode="spinner"/>
     </LinearLayout>
 
@@ -24,18 +25,19 @@
         android:id="@+id/off_duty_time_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center"
         android:layout_below="@id/on_duty_time_container">
         <TextView
             android:layout_width="@dimen/time_picker_textview_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:text="@string/off_duty_string"/>
         <TimePicker
-            android:layout_width="wrap_content"
+            android:id="@+id/timepicker_off_duty"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/time_picker_view_start_margin"
             android:timePickerMode="spinner"/>
     </LinearLayout>
 
@@ -47,10 +49,12 @@
         android:gravity="center"
         android:layout_below="@id/off_duty_time_container">
         <Button
+            android:id="@+id/time_picker_cancel_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_cancel_string"/>
         <Button
+            android:id="@+id/time_picker_ok_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/time_picker_button_dimen"
