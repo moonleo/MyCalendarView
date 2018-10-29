@@ -20,7 +20,7 @@ public class MyTimePickerDialog extends AlertDialog implements View.OnClickListe
     private Button cancelBtn;
     private OnTimeSetListener mListener;
 
-    protected MyTimePickerDialog(Context context) {
+    /*protected MyTimePickerDialog(Context context) {
         super(context);
     }
 
@@ -30,12 +30,20 @@ public class MyTimePickerDialog extends AlertDialog implements View.OnClickListe
 
     protected MyTimePickerDialog(Context context, int themeResId) {
         super(context, themeResId);
-    }
+    }*/
 
     protected MyTimePickerDialog(Context context, MyTimePickerDialog.OnTimeSetListener listener,
-                                 int hourOfDay1, int minute1, int hourOfDay2, int minute2, boolean is24HourView) {
+                                 boolean is24HourFormat) {
         super(context, 0);
         //throw new RuntimeException("Stub!");
+        setOnTimeSetListener(listener);
+        if(onDutyTimePicker != null) {
+            onDutyTimePicker.setIs24HourView(is24HourFormat);
+        }
+        if(offDutyTimePicker != null) {
+            offDutyTimePicker.setIs24HourView(is24HourFormat);
+        }
+
     }
 
     @Override
@@ -59,6 +67,12 @@ public class MyTimePickerDialog extends AlertDialog implements View.OnClickListe
         }
         if(cancelBtn != null) {
             cancelBtn.setOnClickListener(this);
+        }
+    }
+
+    public void setOnTimeSetListener(OnTimeSetListener listener) {
+        if(listener != null) {
+            mListener = listener;
         }
     }
 

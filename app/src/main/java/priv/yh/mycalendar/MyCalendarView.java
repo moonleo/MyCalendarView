@@ -1,6 +1,5 @@
 package priv.yh.mycalendar;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -94,7 +93,7 @@ public class MyCalendarView extends LinearLayout {
 
     private void refreshView() {
         //set current month and year
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT_STRING);
         dateText.setText(sdf.format(mCalendar.getTime()));
 
         //set every day of current month
@@ -122,7 +121,7 @@ public class MyCalendarView extends LinearLayout {
                         Log.e("yanhan", "hourOfDay1="+hourOfDay1+", hourOfDay2="+hourOfDay2
                         +", minute1="+minute1+", minute2="+minute2);
                     }
-                }, 0, 0, 0, 0, is24HourFormat).show();
+                }, is24HourFormat).show();
             }
         });
     }
