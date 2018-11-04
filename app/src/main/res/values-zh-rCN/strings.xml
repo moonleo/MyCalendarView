@@ -11,4 +11,7 @@
     <string name="off_duty_string">下班时间</string>
     <string name="btn_ok_string">确定</string>
     <string name="btn_cancel_string">取消</string>
+
+    <string name="worked_time_string">这一天您工作了%1$s个小时</string>
+    <string name="worked_no_data_string">没有数据哦～</string>
 </resources>

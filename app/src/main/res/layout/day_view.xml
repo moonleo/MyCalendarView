@@ -18,6 +18,12 @@
         android:layout_gravity="center"
         android:textSize="@dimen/text_size" />
 
+    <TextView
+        android:id="@+id/day_cur_worked_hours_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/day_cur_event_imageview"
         android:layout_width="10dp"
