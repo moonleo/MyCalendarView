@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="priv.yh.mycalendar.MainActivity">
 
-    <priv.yh.mycalendar.MyCalendarView
+    <priv.yh.mycalendar.ui.MyCalendarView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

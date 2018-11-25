@@ -1,4 +1,4 @@
-package priv.yh.mycalendar;
+package priv.yh.mycalendar.ui;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import priv.yh.mycalendar.R;
 import priv.yh.mycalendar.model.DayEvent;
 import priv.yh.mycalendar.utils.Constants;
 import priv.yh.mycalendar.utils.MyDBManager;

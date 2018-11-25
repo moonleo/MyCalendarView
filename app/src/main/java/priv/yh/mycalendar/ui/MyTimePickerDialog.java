@@ -1,16 +1,13 @@
-package priv.yh.mycalendar;
+package priv.yh.mycalendar.ui;
 
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TimePicker;
 
-import java.sql.Time;
+import priv.yh.mycalendar.R;
 
 public class MyTimePickerDialog extends AlertDialog implements View.OnClickListener{
 
