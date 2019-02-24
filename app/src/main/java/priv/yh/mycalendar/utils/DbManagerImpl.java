@@ -13,24 +13,30 @@ import priv.yh.mycalendar.utils.Constants.CalendarTable;
 
 import priv.yh.mycalendar.model.DayEvent;
 
-public class MyDBManager implements DBManagerInterface{
+/**
+ * DB Manager
+ *
+ * @author moonleo
+ * @date 2018/12/21
+ */
+public class DbManagerImpl implements IDbManager {
 
-    public static MyDBManager singleton = null;
+    public static DbManagerImpl singleton = null;
 
     private SQLiteDatabase readableDatabase = null;
     private SQLiteDatabase writableDatabase = null;
 
-    public static synchronized MyDBManager getInstance(Context context) {
+    public static synchronized DbManagerImpl getInstance(Context context) {
         if(singleton == null) {
-            MyDBOpenHelper dbHelper = MyDBOpenHelper.getInstance(context);
-            singleton = new MyDBManager();
+            MyDbOpenHelper dbHelper = MyDbOpenHelper.getInstance(context);
+            singleton = new DbManagerImpl();
             singleton.readableDatabase = dbHelper.getReadableDatabase();
             singleton.writableDatabase = dbHelper.getWritableDatabase();
         }
         return singleton;
     }
 
-    private MyDBManager() {}
+    private DbManagerImpl() {}
 
     @Override
     public void insertManHour(DayEvent dayEvent) {

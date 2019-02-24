@@ -1,5 +1,11 @@
 package priv.yh.mycalendar.model;
 
+/**
+ * day model
+ *
+ * @author moonleo
+ * @date 2018/08/18
+ */
 public class DayEvent {
     private int year;
     private int month;

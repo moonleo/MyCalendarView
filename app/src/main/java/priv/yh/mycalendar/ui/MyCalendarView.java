@@ -28,13 +28,15 @@ import java.util.List;
 import priv.yh.mycalendar.R;
 import priv.yh.mycalendar.model.DayEvent;
 import priv.yh.mycalendar.utils.Constants;
-import priv.yh.mycalendar.utils.MyDBManager;
+import priv.yh.mycalendar.utils.DbManagerImpl;
 import priv.yh.mycalendar.utils.Utils;
 
 /**
- * Created by yzh on 2018/8/19.
+ * My Calendar View
+ *
+ * @author moonleo
+ * @date 2018/08/19
  */
-
 public class MyCalendarView extends LinearLayout
         implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
@@ -47,7 +49,7 @@ public class MyCalendarView extends LinearLayout
 
     private Calendar mCalendar = Calendar.getInstance();
 
-    private MyDBManager mDBManager;
+    private DbManagerImpl mDBManager;
 
     public MyCalendarView(Context context) {
         super(context);
@@ -83,7 +85,7 @@ public class MyCalendarView extends LinearLayout
     }
 
     private void initData(Context context) {
-        mDBManager = MyDBManager.getInstance(context);
+        mDBManager = DbManagerImpl.getInstance(context);
     }
 
     private void bindEvent() {

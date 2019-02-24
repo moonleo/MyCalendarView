@@ -5,6 +5,10 @@
     android:orientation="vertical"
     android:paddingStart="10dp"
     android:paddingEnd="10dp">
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/account_header"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

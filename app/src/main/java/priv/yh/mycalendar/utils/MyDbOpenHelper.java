@@ -6,9 +6,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import priv.yh.mycalendar.utils.Constants.CalendarTable;
 
-public class MyDBOpenHelper extends SQLiteOpenHelper {
+/**
+ * SQL lite DB Helper
+ *
+ * @author moonleo
+ * @date 2018/12/21
+ */
+public class MyDbOpenHelper extends SQLiteOpenHelper {
 
-    private static MyDBOpenHelper singleton = null;
+    private static MyDbOpenHelper singleton = null;
 
     private static final String DB_NAME = "mycalendar.db";
 
@@ -20,7 +26,7 @@ public class MyDBOpenHelper extends SQLiteOpenHelper {
             "primary key ("+CalendarTable.KEY_YEAR+","+CalendarTable.KEY_MONTH+","+CalendarTable.KEY_DAY+"))";
     private static final String DROP_TABLE = "drop table if exists " + CalendarTable.TABLE_NAME;
 
-    private MyDBOpenHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+    private MyDbOpenHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
 
@@ -39,9 +45,9 @@ public class MyDBOpenHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public static synchronized MyDBOpenHelper getInstance(Context context) {
+    public static synchronized MyDbOpenHelper getInstance(Context context) {
         if(singleton == null) {
-            singleton = new MyDBOpenHelper(context, DB_NAME, null, 1);
+            singleton = new MyDbOpenHelper(context, DB_NAME, null, 1);
         }
         return singleton;
     }

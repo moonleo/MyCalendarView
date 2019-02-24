@@ -7,4 +7,9 @@
     <dimen name="time_picker_button_dimen">80dp</dimen>
     <dimen name="time_picker_textview_width">90dp</dimen>
     <dimen name="time_picker_view_start_margin">20dp</dimen>
+
+    <dimen name="profile_width">30dp</dimen>
+    <dimen name="profile_height">30dp</dimen>
+    <dimen name="profile_margin_top">5dp</dimen>
+    <dimen name="profile_margin_bottom">5dp</dimen>
 </resources>
