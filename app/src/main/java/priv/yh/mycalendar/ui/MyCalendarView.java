@@ -3,6 +3,7 @@ package priv.yh.mycalendar.ui;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -116,15 +117,20 @@ public class MyCalendarView extends LinearLayout
         dateText.setText(sdf.format(mCalendar.getTime()));
 
         //set every day of current month
-        ArrayList<Date> dates = new ArrayList<>();
+        ArrayList<DayEvent> dates = new ArrayList<>();
 
         Calendar curDate = (Calendar) mCalendar.clone();
         curDate.set(Calendar.DAY_OF_MONTH, 1);
         int preDays = curDate.get(Calendar.DAY_OF_WEEK) - 1;
         curDate.add(Calendar.DAY_OF_MONTH, -preDays);
 
+        DayEvent day;
         for (int i = 0; i < Constants.MAX_DATE_CELL_NUM; i++) {
-            dates.add(curDate.getTime());
+            day = new DayEvent();
+            day.setYear(curDate.get(Calendar.YEAR));
+            day.setMonth(curDate.get(Calendar.MONTH) + 1);
+            day.setDay(curDate.get(Calendar.DAY_OF_MONTH));
+            dates.add(day);
             curDate.add(Calendar.DAY_OF_MONTH, 1);
         }
 
@@ -140,8 +146,8 @@ public class MyCalendarView extends LinearLayout
         String workedStr = null;
         TextView clickedView = view.findViewById(R.id.day_cur_textview);
         int clickedDate = Integer.parseInt(clickedView.getText().toString());
-        List<DayEvent> list = mDBManager.queryDayEvents(mCalendar.getTime().getYear(),
-                mCalendar.getTime().getMonth(), clickedDate);
+        List<DayEvent> list = mDBManager.queryDayEvents(mCalendar.get(Calendar.YEAR),
+                mCalendar.get(Calendar.MONTH) + 1, clickedDate);
         if (list != null && list.size() > 0) {
             workedStr = String.valueOf(list.get(0).getManHour());
         }
@@ -164,12 +170,10 @@ public class MyCalendarView extends LinearLayout
                 Log.e("moonleo", "hourOfDay1=" + hourOfDay1 + ", hourOfDay2=" + hourOfDay2
                         + ", minute1=" + minute1 + ", minute2=" + minute2);
                 if (hourOfDay1 > hourOfDay2) {
-                    //imageView.setImageResource(R.drawable.black);
                     return;
                 }
                 if (hourOfDay1 == hourOfDay2) {
                     if (minute1 >= minute2) {
-                        //imageView.setImageResource(R.drawable.black);
                         return;
                     }
                 }
@@ -180,7 +184,8 @@ public class MyCalendarView extends LinearLayout
                     hour2 -= 1;
                 }
                 double result = Utils.formatDouble(hour2 - hour1 + min / 60);
-                Date clickedViewDate = mCalendar.getTime();
+                DayEvent clickedViewDate = new DayEvent(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH) + 1,
+                        clickedDay);
                 Log.e("moonleo", "year:" + clickedViewDate.getYear() +
                         "month:" + clickedViewDate.getMonth() +
                         "day:" + +clickedDay+
@@ -198,23 +203,26 @@ public class MyCalendarView extends LinearLayout
         return true;
     }
 
-    private class MyCalendarAdapter extends ArrayAdapter<Date> {
+    private class MyCalendarAdapter extends ArrayAdapter<DayEvent> {
+        private Context context;
+
         private int mResourceId;
         private LayoutInflater inflater;
         private ViewHolder holder;
 
-        public MyCalendarAdapter(@NonNull Context context, int resource, ArrayList<Date> dates) {
+        public MyCalendarAdapter(@NonNull Context context, int resource, ArrayList<DayEvent> dates) {
             super(context, resource, dates);
-            inflater = LayoutInflater.from(context);
+            this.context = context;
+            this.inflater = LayoutInflater.from(context);
             this.mResourceId = resource;
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            Date curDayCell = getItem(position);
-            Date today = new Date();
-            boolean isCurMonth = (mCalendar.get(Calendar.MONTH) == curDayCell.getMonth());
+            DayEvent curDayCell = getItem(position);
+            DayEvent today = new DayEvent(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH) + 1,
+                    mCalendar.get(Calendar.DAY_OF_MONTH));
             if (convertView == null) {
                 convertView = inflater.inflate(mResourceId, null);
                 holder = new ViewHolder();
@@ -225,21 +233,22 @@ public class MyCalendarView extends LinearLayout
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.dayTextView.setText(String.valueOf(curDayCell.getDate()));
+            holder.dayTextView.setText(String.valueOf(curDayCell.getDay()));
+            boolean isCurMonth = ((mCalendar.get(Calendar.MONTH) + 1) == curDayCell.getMonth());
             holder.dayTextView.setTextColor(isCurMonth ?
-                    getResources().getColor(R.color.color_cur_month_day) :
-                    getResources().getColor(R.color.color_not_cur_month_day));
-            if (today.getDate() == curDayCell.getDate()
+                    ContextCompat.getColor(context, R.color.color_cur_month_day) :
+                    ContextCompat.getColor(context, R.color.color_not_cur_month_day));
+            if (today.getDay() == curDayCell.getDay()
                     && today.getMonth() == curDayCell.getMonth()
                     && today.getYear() == curDayCell.getYear()
-                    /*for other month not set today-flag*/
-                    && mCalendar.get(Calendar.MONTH) == today.getMonth()) {
+                    /* for other month not set today-flag */
+                    && (mCalendar.get(Calendar.MONTH) + 1) == today.getMonth()) {
                 holder.backgroundImageView.setVisibility(VISIBLE);
-                holder.dayTextView.setTextColor(getResources().getColor(R.color.color_cur_day_text));
+                holder.dayTextView.setTextColor(ContextCompat.getColor(context, R.color.color_cur_day_text));
             }
-            Log.e("moonleo","view " + curDayCell.getYear()+"/"+curDayCell.getMonth()+"/"+curDayCell.getDate());
+            Log.e("moonleo","view " + curDayCell.getYear()+"/"+curDayCell.getMonth()+"/"+curDayCell.getDay());
             List<DayEvent> dayEvents = mDBManager.queryDayEvents(curDayCell.getYear(), curDayCell.getMonth(),
-                    curDayCell.getDate());
+                    curDayCell.getDay());
             Log.e("moonleo", "dayEvents.size = " + dayEvents.size());
             if(dayEvents != null && dayEvents.size() > 0) {
                 DayEvent curDayEvent = dayEvents.get(0);

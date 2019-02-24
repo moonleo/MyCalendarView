@@ -16,6 +16,10 @@ public class DayEvent {
 
     }
 
+    public DayEvent(int year, int month, int day) {
+        this(year, month, day, 0);
+    }
+
     public DayEvent(int year, int month, int day, double manHour) {
         this.year = year;
         this.month = month;
