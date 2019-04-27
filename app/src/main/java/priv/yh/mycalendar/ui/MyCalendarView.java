@@ -20,10 +20,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import priv.yh.mycalendar.R;
@@ -39,16 +40,17 @@ import priv.yh.mycalendar.utils.Utils;
  * @date 2018/08/19
  */
 public class MyCalendarView extends LinearLayout
-        implements AdapterView.OnItemClickListener,
-        AdapterView.OnItemLongClickListener {
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+    private static final String TAG = "MyCalendarView";
 
-    private ImageView preMonthBtn;
-    private ImageView nextMonthBtn;
-    private TextView dateText;
+    private ImageView mPreMonthBtn;
+    private ImageView mNextMonthBtn;
+    private TextView mTitleDateText;
 
-    private GridView gridView;
+    private GridView mGridView;
 
-    private Calendar mCalendar = Calendar.getInstance();
+    private LocalDate mCurDate = LocalDate.now();
+
 
     private DbManagerImpl mDBManager;
 
@@ -76,11 +78,11 @@ public class MyCalendarView extends LinearLayout
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         layoutInflater.inflate(R.layout.calendar_view, this);
 
-        preMonthBtn = findViewById(R.id.btnPreMonth);
-        nextMonthBtn = findViewById(R.id.btnNextMonth);
-        dateText = findViewById(R.id.txtDate);
+        mPreMonthBtn = findViewById(R.id.btnPreMonth);
+        mNextMonthBtn = findViewById(R.id.btnNextMonth);
+        mTitleDateText = findViewById(R.id.txtDate);
 
-        gridView = findViewById(R.id.calendar_grid);
+        mGridView = findViewById(R.id.calendar_grid);
 
         bindEvent();
     }
@@ -90,21 +92,21 @@ public class MyCalendarView extends LinearLayout
     }
 
     private void bindEvent() {
-        if (preMonthBtn != null) {
-            preMonthBtn.setOnClickListener(new OnClickListener() {
+        if (mPreMonthBtn != null) {
+            mPreMonthBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCalendar.add(Calendar.MONTH, -1);
+                    mCurDate.plusMonths(1);
                     refreshView();
                 }
             });
         }
 
-        if (nextMonthBtn != null) {
-            nextMonthBtn.setOnClickListener(new OnClickListener() {
+        if (mNextMonthBtn != null) {
+            mNextMonthBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCalendar.add(Calendar.MONTH, +1);
+                    mCurDate.minusMonths(1);
                     refreshView();
                 }
             });
@@ -112,33 +114,36 @@ public class MyCalendarView extends LinearLayout
     }
 
     private void refreshView() {
-        //set current month and year
-        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT_STRING);
-        dateText.setText(sdf.format(mCalendar.getTime()));
+        //set current month and year at the title
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT_STRING);
+        mTitleDateText.setText(mCurDate.format(formatter));
 
-        //set every day of current month
+        //record every day of current month
         ArrayList<DayEvent> dates = new ArrayList<>();
 
-        Calendar curDate = (Calendar) mCalendar.clone();
-        curDate.set(Calendar.DAY_OF_MONTH, 1);
-        int preDays = curDate.get(Calendar.DAY_OF_WEEK) - 1;
-        curDate.add(Calendar.DAY_OF_MONTH, -preDays);
+        //first day of cur month
+        LocalDate dayCursor = mCurDate.with(TemporalAdjusters.firstDayOfMonth());
+        //cal what day of the week it is because the calendar start at Sunday
+        int dayOfWeek = dayCursor.getDayOfWeek().getValue();
+        //the firstDay must minus this days, because we have to show this days on last month in our
+        // calendar
+        dayCursor.minusDays(dayOfWeek);
 
         DayEvent day;
         for (int i = 0; i < Constants.MAX_DATE_CELL_NUM; i++) {
             day = new DayEvent();
-            day.setYear(curDate.get(Calendar.YEAR));
-            day.setMonth(curDate.get(Calendar.MONTH) + 1);
-            day.setDay(curDate.get(Calendar.DAY_OF_MONTH));
+            day.setYear(dayCursor.getYear());
+            day.setMonth(dayCursor.getMonthValue());
+            day.setDay(dayCursor.getDayOfMonth());
             dates.add(day);
-            curDate.add(Calendar.DAY_OF_MONTH, 1);
+            dayCursor.plusDays(1);
         }
 
-        gridView.setAdapter(new MyCalendarAdapter(getContext(), R.layout.day_view, dates));
+        mGridView.setAdapter(new MyCalendarAdapter(getContext(), R.layout.day_view, dates));
         //bind long click event
-        gridView.setOnItemLongClickListener(this);
+        mGridView.setOnItemLongClickListener(this);
         //bind click event
-        gridView.setOnItemClickListener(this);
+        mGridView.setOnItemClickListener(this);
     }
 
     @Override
@@ -146,8 +151,7 @@ public class MyCalendarView extends LinearLayout
         String workedStr = null;
         TextView clickedView = view.findViewById(R.id.day_cur_textview);
         int clickedDate = Integer.parseInt(clickedView.getText().toString());
-        List<DayEvent> list = mDBManager.queryDayEvents(mCalendar.get(Calendar.YEAR),
-                mCalendar.get(Calendar.MONTH) + 1, clickedDate);
+        List<DayEvent> list = mDBManager.queryDayEvents(mCurDate.getYear(), mCurDate.getMonthValue(), clickedDate);
         if (list != null && list.size() > 0) {
             workedStr = String.valueOf(list.get(0).getManHour());
         }
@@ -167,13 +171,15 @@ public class MyCalendarView extends LinearLayout
             @Override
             public void onTimeSet(TimePicker tp1, int hourOfDay1, int minute1,
                                   TimePicker tp2, int hourOfDay2, int minute2) {
-                Log.e("moonleo", "hourOfDay1=" + hourOfDay1 + ", hourOfDay2=" + hourOfDay2
+                Log.d(TAG, "hourOfDay1=" + hourOfDay1 + ", hourOfDay2=" + hourOfDay2
                         + ", minute1=" + minute1 + ", minute2=" + minute2);
                 if (hourOfDay1 > hourOfDay2) {
+                    Log.e(TAG, "off work hour < on duty hour");
                     return;
                 }
                 if (hourOfDay1 == hourOfDay2) {
                     if (minute1 >= minute2) {
+                        Log.e(TAG, "off work minute < on duty minute");
                         return;
                     }
                 }
@@ -184,11 +190,10 @@ public class MyCalendarView extends LinearLayout
                     hour2 -= 1;
                 }
                 double result = Utils.formatDouble(hour2 - hour1 + min / 60);
-                DayEvent clickedViewDate = new DayEvent(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH) + 1,
-                        clickedDay);
-                Log.e("moonleo", "year:" + clickedViewDate.getYear() +
+                DayEvent clickedViewDate = new DayEvent(mCurDate.getYear(), mCurDate.getMonthValue(), clickedDay);
+                Log.d(TAG, "year:" + clickedViewDate.getYear() +
                         "month:" + clickedViewDate.getMonth() +
-                        "day:" + +clickedDay+
+                        "day:" + +clickedDay +
                         "worked :" + result);
                 mDBManager.insertManHour(new DayEvent(clickedViewDate.getYear(),
                         clickedViewDate.getMonth(), clickedDay, result));
@@ -221,8 +226,7 @@ public class MyCalendarView extends LinearLayout
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             DayEvent curDayCell = getItem(position);
-            DayEvent today = new DayEvent(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH) + 1,
-                    mCalendar.get(Calendar.DAY_OF_MONTH));
+            DayEvent today = new DayEvent(mCurDate.getYear(), mCurDate.getMonthValue(), mCurDate.getDayOfMonth());
             if (convertView == null) {
                 convertView = inflater.inflate(mResourceId, null);
                 holder = new ViewHolder();
@@ -234,7 +238,7 @@ public class MyCalendarView extends LinearLayout
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.dayTextView.setText(String.valueOf(curDayCell.getDay()));
-            boolean isCurMonth = ((mCalendar.get(Calendar.MONTH) + 1) == curDayCell.getMonth());
+            boolean isCurMonth = (mCurDate.getMonthValue() == curDayCell.getMonth());
             holder.dayTextView.setTextColor(isCurMonth ?
                     ContextCompat.getColor(context, R.color.color_cur_month_day) :
                     ContextCompat.getColor(context, R.color.color_not_cur_month_day));
@@ -242,19 +246,18 @@ public class MyCalendarView extends LinearLayout
                     && today.getMonth() == curDayCell.getMonth()
                     && today.getYear() == curDayCell.getYear()
                     /* for other month not set today-flag */
-                    && (mCalendar.get(Calendar.MONTH) + 1) == today.getMonth()) {
+                    && mCurDate.getMonthValue() == today.getMonth()) {
                 holder.backgroundImageView.setVisibility(VISIBLE);
                 holder.dayTextView.setTextColor(ContextCompat.getColor(context, R.color.color_cur_day_text));
             }
-            Log.e("moonleo","view " + curDayCell.getYear()+"/"+curDayCell.getMonth()+"/"+curDayCell.getDay());
+            Log.d(TAG, "view " + curDayCell.getYear() + "/" + curDayCell.getMonth() + "/" + curDayCell.getDay());
             List<DayEvent> dayEvents = mDBManager.queryDayEvents(curDayCell.getYear(), curDayCell.getMonth(),
                     curDayCell.getDay());
-            Log.e("moonleo", "dayEvents.size = " + dayEvents.size());
-            if(dayEvents != null && dayEvents.size() > 0) {
+            if (dayEvents != null && dayEvents.size() > 0) {
                 DayEvent curDayEvent = dayEvents.get(0);
                 if (curDayEvent.getManHour() != 0) {
                     holder.dayEventImageView.setVisibility(View.VISIBLE);
-                    if(Utils.isEnoughManHour(curDayEvent.getManHour())) {
+                    if (Utils.isEnoughManHour(curDayEvent.getManHour())) {
                         holder.dayEventImageView.setImageResource(R.drawable.green);
                     } else {
                         holder.dayEventImageView.setImageResource(R.drawable.red);
