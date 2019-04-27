@@ -96,7 +96,7 @@ public class MyCalendarView extends LinearLayout
             mPreMonthBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCurDate.plusMonths(1);
+                    mCurDate = mCurDate.minusMonths(1);
                     refreshView();
                 }
             });
@@ -106,7 +106,7 @@ public class MyCalendarView extends LinearLayout
             mNextMonthBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCurDate.minusMonths(1);
+                    mCurDate = mCurDate.plusMonths(1);
                     refreshView();
                 }
             });
@@ -127,7 +127,7 @@ public class MyCalendarView extends LinearLayout
         int dayOfWeek = dayCursor.getDayOfWeek().getValue();
         //the firstDay must minus this days, because we have to show this days on last month in our
         // calendar
-        dayCursor.minusDays(dayOfWeek);
+        dayCursor = dayCursor.minusDays(dayOfWeek);
 
         DayEvent day;
         for (int i = 0; i < Constants.MAX_DATE_CELL_NUM; i++) {
@@ -136,7 +136,7 @@ public class MyCalendarView extends LinearLayout
             day.setMonth(dayCursor.getMonthValue());
             day.setDay(dayCursor.getDayOfMonth());
             dates.add(day);
-            dayCursor.plusDays(1);
+            dayCursor = dayCursor.plusDays(1);
         }
 
         mGridView.setAdapter(new MyCalendarAdapter(getContext(), R.layout.day_view, dates));
@@ -226,7 +226,7 @@ public class MyCalendarView extends LinearLayout
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             DayEvent curDayCell = getItem(position);
-            DayEvent today = new DayEvent(mCurDate.getYear(), mCurDate.getMonthValue(), mCurDate.getDayOfMonth());
+            LocalDate todayDate = LocalDate.now();
             if (convertView == null) {
                 convertView = inflater.inflate(mResourceId, null);
                 holder = new ViewHolder();
@@ -242,11 +242,11 @@ public class MyCalendarView extends LinearLayout
             holder.dayTextView.setTextColor(isCurMonth ?
                     ContextCompat.getColor(context, R.color.color_cur_month_day) :
                     ContextCompat.getColor(context, R.color.color_not_cur_month_day));
-            if (today.getDay() == curDayCell.getDay()
-                    && today.getMonth() == curDayCell.getMonth()
-                    && today.getYear() == curDayCell.getYear()
+            if (todayDate.getDayOfMonth() == curDayCell.getDay()
+                    && todayDate.getMonthValue() == curDayCell.getMonth()
+                    && todayDate.getYear() == curDayCell.getYear()
                     /* for other month not set today-flag */
-                    && mCurDate.getMonthValue() == today.getMonth()) {
+                    && mCurDate.getMonthValue() == todayDate.getMonthValue()) {
                 holder.backgroundImageView.setVisibility(VISIBLE);
                 holder.dayTextView.setTextColor(ContextCompat.getColor(context, R.color.color_cur_day_text));
             }

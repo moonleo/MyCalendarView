@@ -12,6 +12,6 @@
     <string name="btn_ok_string">OK</string>
     <string name="btn_cancel_string">CANCEL</string>
 
-    <string name="worked_time_string">You have worked %1$s hours</string>
+    <string name="worked_time_string">You have worked %1$s hours this day</string>
     <string name="worked_no_data_string">Sorry, no data</string>
 </resources>

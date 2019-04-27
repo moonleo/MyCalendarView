@@ -1,6 +1,7 @@
 package priv.yh.mycalendar.ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -15,7 +16,7 @@ import priv.yh.mycalendar.R;
  * @author moonleo
  * @date 2019/02/22
  */
-public class MyTimePickerDialog extends AlertDialog implements View.OnClickListener{
+public class MyTimePickerDialog extends Dialog implements View.OnClickListener{
 
     private TimePicker onDutyTimePicker;
     private TimePicker offDutyTimePicker;
