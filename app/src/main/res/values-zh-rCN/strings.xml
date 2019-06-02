@@ -14,4 +14,6 @@
 
     <string name="worked_time_string">这一天您工作了%1$s个小时</string>
     <string name="worked_no_data_string">没有数据哦～</string>
+
+    <string name="holiday_string">休</string>
 </resources>

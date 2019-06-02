@@ -31,4 +31,10 @@ public interface IDbManager {
      * @return list of day event
      */
     List<DayEvent> queryDayEvents(int year, int month, int day);
+
+    /**
+     * update day type in database
+     * @param dayEvent day model
+     */
+    void updateDayType(DayEvent dayEvent);
 }

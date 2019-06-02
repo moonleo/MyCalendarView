@@ -11,13 +11,19 @@ public class DayEvent {
     private int month;
     private int day;
     private double manHour;
+    /**
+     * same as DayType value
+     */
+    private int dayType = DayType.DAY_TYPE_NULL.getValue();
+
+    private String tag;
 
     public DayEvent() {
 
     }
 
     public DayEvent(int year, int month, int day) {
-        this(year, month, day, 0);
+        this(year, month, day, 0, DayType.DAY_TYPE_NULL.getValue());
     }
 
     public DayEvent(int year, int month, int day, double manHour) {
@@ -25,6 +31,15 @@ public class DayEvent {
         this.month = month;
         this.day = day;
         this.manHour = manHour;
+        this.dayType = DayType.DAY_TYPE_NULL.getValue();
+    }
+
+    public DayEvent(int year, int month, int day, double manHour, int dayType) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.manHour = manHour;
+        this.dayType = dayType;
     }
 
     public int getYear() {
@@ -57,5 +72,26 @@ public class DayEvent {
 
     public void setManHour(double manHour) {
         this.manHour = manHour;
+    }
+
+    public int getDayType() {
+        return dayType;
+    }
+
+    public void setDayType(int dayType) {
+        this.dayType = dayType;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String toString() {
+        return year + "/" + month + "/" + day;
     }
 }

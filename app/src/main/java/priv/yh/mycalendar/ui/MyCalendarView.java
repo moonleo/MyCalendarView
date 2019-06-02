@@ -1,6 +1,8 @@
 package priv.yh.mycalendar.ui;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -24,13 +26,16 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import priv.yh.mycalendar.R;
 import priv.yh.mycalendar.model.DayEvent;
+import priv.yh.mycalendar.model.DayType;
+import priv.yh.mycalendar.model.HolidayMode;
 import priv.yh.mycalendar.utils.Constants;
 import priv.yh.mycalendar.utils.DbManagerImpl;
+import priv.yh.mycalendar.utils.HttpUtils;
+import priv.yh.mycalendar.utils.JsonUtils;
 import priv.yh.mycalendar.utils.Utils;
 
 /**
@@ -51,8 +56,9 @@ public class MyCalendarView extends LinearLayout
 
     private LocalDate mCurDate = LocalDate.now();
 
-
     private DbManagerImpl mDBManager;
+
+    private MyCalendarAdapter myCalendarAdapter;
 
     public MyCalendarView(Context context) {
         super(context);
@@ -138,8 +144,8 @@ public class MyCalendarView extends LinearLayout
             dates.add(day);
             dayCursor = dayCursor.plusDays(1);
         }
-
-        mGridView.setAdapter(new MyCalendarAdapter(getContext(), R.layout.day_view, dates));
+        myCalendarAdapter = new MyCalendarAdapter(getContext(), R.layout.day_view, dates);
+        mGridView.setAdapter(myCalendarAdapter);
         //bind long click event
         mGridView.setOnItemLongClickListener(this);
         //bind click event
@@ -189,7 +195,8 @@ public class MyCalendarView extends LinearLayout
                 if (min < 0) {
                     hour2 -= 1;
                 }
-                double result = Utils.formatDouble(hour2 - hour1 + min / 60);
+                double result = Utils.formatDouble(Constants.DOUBLE_SCALE,
+                        hour2 - hour1 + min / 60);
                 DayEvent clickedViewDate = new DayEvent(mCurDate.getYear(), mCurDate.getMonthValue(), clickedDay);
                 Log.d(TAG, "year:" + clickedViewDate.getYear() +
                         "month:" + clickedViewDate.getMonth() +
@@ -206,6 +213,51 @@ public class MyCalendarView extends LinearLayout
             }
         }, is24HourFormat).show();
         return true;
+    }
+
+    private void requestDayType(DayEvent curDayCell) {
+        Handler handler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                switch (msg.what) {
+                    case HttpUtils.HTTP_RESPONSE_SUCCESS:
+                        HolidayMode holidayMode = JsonUtils.parseHolidayMode(msg.obj.toString());
+                        Log.e(TAG,
+                                "enter handleMessage http success!, curDay="+curDayCell+"holiday " +
+                                        "type =" +
+                                        " " + holidayMode.getData());
+                        curDayCell.setDayType(holidayMode.getData());
+                        mDBManager.updateDayType(curDayCell);
+                        if (myCalendarAdapter != null) {
+                            myCalendarAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                    default:
+                        Log.w(TAG, "http request error...");
+                        break;
+                }
+            }
+        };
+        String formattedDate =
+                curDayCell.getYear() +
+                        "" + Utils.formatDayOrMonthToTwoCharString(curDayCell.getMonth()) +
+                        "" + Utils.formatDayOrMonthToTwoCharString(curDayCell.getDay());
+        String concatedUrl = Constants.CHECK_HOLIDAY_URL + "?date=" + formattedDate;
+        Log.d(TAG, "url = " + concatedUrl);
+        curDayCell.setTag(formattedDate);
+        HttpUtils.getRequest(concatedUrl, handler);
+    }
+
+    private void showDayType(DayEvent curDayCell, MyCalendarAdapter.ViewHolder holder) {
+        DayType type = DayType.get(curDayCell.getDayType());
+        switch(type) {
+            case DAY_TYPE_HOLIDAY:
+                holder.dayHolidayTextView.setVisibility(View.VISIBLE);
+                break;
+            default:
+                holder.dayHolidayTextView.setVisibility(View.INVISIBLE);
+                break;
+        }
     }
 
     private class MyCalendarAdapter extends ArrayAdapter<DayEvent> {
@@ -225,7 +277,7 @@ public class MyCalendarView extends LinearLayout
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            DayEvent curDayCell = getItem(position);
+            final DayEvent curDayCell = getItem(position);
             LocalDate todayDate = LocalDate.now();
             if (convertView == null) {
                 convertView = inflater.inflate(mResourceId, null);
@@ -233,15 +285,18 @@ public class MyCalendarView extends LinearLayout
                 holder.backgroundImageView = convertView.findViewById(R.id.day_bg_imageview);
                 holder.dayTextView = convertView.findViewById(R.id.day_cur_textview);
                 holder.dayEventImageView = convertView.findViewById(R.id.day_cur_event_imageview);
+                holder.dayHolidayTextView =
+                        convertView.findViewById(R.id.day_cur_holiday_textview);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+
             holder.dayTextView.setText(String.valueOf(curDayCell.getDay()));
             boolean isCurMonth = (mCurDate.getMonthValue() == curDayCell.getMonth());
             holder.dayTextView.setTextColor(isCurMonth ?
-                    ContextCompat.getColor(context, R.color.color_cur_month_day) :
-                    ContextCompat.getColor(context, R.color.color_not_cur_month_day));
+                    context.getColor(R.color.color_cur_month_day) :
+                    context.getColor(R.color.color_not_cur_month_day));
             if (todayDate.getDayOfMonth() == curDayCell.getDay()
                     && todayDate.getMonthValue() == curDayCell.getMonth()
                     && todayDate.getYear() == curDayCell.getYear()
@@ -250,11 +305,11 @@ public class MyCalendarView extends LinearLayout
                 holder.backgroundImageView.setVisibility(VISIBLE);
                 holder.dayTextView.setTextColor(ContextCompat.getColor(context, R.color.color_cur_day_text));
             }
-            Log.d(TAG, "view " + curDayCell.getYear() + "/" + curDayCell.getMonth() + "/" + curDayCell.getDay());
             List<DayEvent> dayEvents = mDBManager.queryDayEvents(curDayCell.getYear(), curDayCell.getMonth(),
                     curDayCell.getDay());
             if (dayEvents != null && dayEvents.size() > 0) {
                 DayEvent curDayEvent = dayEvents.get(0);
+                // set man hour view
                 if (curDayEvent.getManHour() != 0) {
                     holder.dayEventImageView.setVisibility(View.VISIBLE);
                     if (Utils.isEnoughManHour(curDayEvent.getManHour())) {
@@ -265,6 +320,18 @@ public class MyCalendarView extends LinearLayout
                 } else {
                     holder.dayEventImageView.setVisibility(View.INVISIBLE);
                 }
+                // set day type view
+                if(curDayEvent.getDayType() == DayType.DAY_TYPE_NULL.getValue() && curDayCell.getTag() == null) {
+                    //TODO optimize http request
+                    requestDayType(curDayCell);
+                } else {
+                    showDayType(curDayCell, holder);
+                }
+            } else if(curDayCell.getDayType() == DayType.DAY_TYPE_NULL.getValue() && curDayCell.getTag() == null) {
+                //TODO optimize http request
+                requestDayType(curDayCell);
+            } else {
+                showDayType(curDayCell, holder);
             }
             return convertView;
         }
@@ -273,6 +340,7 @@ public class MyCalendarView extends LinearLayout
             ImageView backgroundImageView;
             TextView dayTextView;
             ImageView dayEventImageView;
+            TextView dayHolidayTextView;
         }
     }
 

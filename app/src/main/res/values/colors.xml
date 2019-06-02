@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorRed">#ff0000</color>
 
     <color name="color_not_cur_month_day">#666666</color>
     <color name="color_cur_month_day">#000000</color>

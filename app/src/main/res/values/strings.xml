@@ -14,4 +14,6 @@
 
     <string name="worked_time_string">You have worked %1$s hours this day</string>
     <string name="worked_no_data_string">Sorry, no data</string>
+
+    <string name="holiday_string">休</string>
 </resources>

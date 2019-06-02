@@ -89,4 +89,18 @@ public class DbManagerImpl implements IDbManager {
         return result;
     }
 
+    @Override
+    public void updateDayType(DayEvent dayEvent) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CalendarTable.KEY_DAY_TYPE, dayEvent.getDayType());
+        writableDatabase.update(CalendarTable.TABLE_NAME, contentValues,
+                CalendarTable.KEY_YEAR + "=? AND " +
+                        CalendarTable.KEY_MONTH + "=? AND " +
+                        CalendarTable.KEY_DAY + "=?",
+                        new String[]{
+                                String.valueOf(dayEvent.getYear()),
+                                String.valueOf(dayEvent.getMonth()),
+                                String.valueOf(dayEvent.getDay())});
+    }
+
 }

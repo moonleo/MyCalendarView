@@ -10,20 +10,12 @@
         android:layout_height="match_parent"
         android:src="@drawable/black"
         android:visibility="invisible" />
-
     <TextView
         android:id="@+id/day_cur_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textSize="@dimen/text_size" />
-
-    <TextView
-        android:id="@+id/day_cur_worked_hours_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-
     <ImageView
         android:id="@+id/day_cur_event_imageview"
         android:layout_width="10dp"
@@ -31,4 +23,14 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="0dp"
         android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/day_cur_holiday_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:text="@string/holiday_string"
+        android:textSize="@dimen/holiday_text_size"
+        android:visibility="invisible"
+        android:textColor="@color/colorRed"/>
 </FrameLayout>

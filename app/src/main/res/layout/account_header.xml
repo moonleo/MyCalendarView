@@ -7,5 +7,5 @@
         android:layout_height="@dimen/profile_height"
         android:layout_marginTop="@dimen/profile_margin_top"
         android:layout_marginBottom="@dimen/profile_margin_bottom"
-        android:src="@drawable/profile"/>
+        android:src="@drawable/ic_profile"/>
 </LinearLayout>

@@ -23,6 +23,7 @@ public class MyDbOpenHelper extends SQLiteOpenHelper {
             CalendarTable.KEY_MONTH + " integer(4)," +
             CalendarTable.KEY_DAY + " integer(4)," +
             CalendarTable.KEY_MAN_HOUR + " double(5)," +
+            CalendarTable.KEY_DAY_TYPE + " integer(4)," +
             "primary key ("+CalendarTable.KEY_YEAR+","+CalendarTable.KEY_MONTH+","+CalendarTable.KEY_DAY+"))";
     private static final String DROP_TABLE = "drop table if exists " + CalendarTable.TABLE_NAME;
 
